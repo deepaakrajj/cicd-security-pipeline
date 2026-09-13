@@ -47,7 +47,7 @@ This is a good example of why dependency pinning matters for reasons beyond secu
 
 ## Vulnerability found and fixed
 
-This is the pipeline actually doing its job — not just theory.
+This is the workling of the pipeline.
 
 **Before fix:** the dependency scan (Trivy) caught 3 real, publicly tracked vulnerabilities in the pinned Flask/Werkzeug versions and blocked the build:
 
@@ -65,7 +65,7 @@ This is the pipeline actually doing its job — not just theory.
 
 ![All pipeline stages passing after the fix](docs/screenshots/dependency-scan-after-fix.png)
 
-This is the enforcement mechanism working as designed: a real vulnerability was introduced, automatically caught before deployment, and the pipeline stayed red until it was actually fixed — not just logged and ignored.
+This is the enforcement mechanism working as designed: a real vulnerability was introduced, automatically caught before deployment and the pipeline stayed red until it was actually fixed.
 
 ---
 
