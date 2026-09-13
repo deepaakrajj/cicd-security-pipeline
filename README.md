@@ -1,10 +1,10 @@
 # CI/CD Security Pipeline
 
-A DevSecOps pipeline that automatically scans every code push for three categories of risk — code-level vulnerabilities, vulnerable dependencies, and leaked secrets — and blocks deployment if anything critical is found.
+A DevSecOps pipeline that automatically scans every code push for three categories of risk — code-level vulnerabilities, vulnerable dependencies and leaked secrets and blocks deployment if anything critical is found.
 
 ## Why this exists
 
-Manual security review doesn't scale with the pace of modern software delivery. The industry answer is "shift-left security": build automated security checks directly into the CI/CD pipeline so every code change is checked before it can ship, with no dependence on a human remembering to run a scan.
+Manual security review doesn't scale with the pace of modern software delivery. The industry answer is build automated security checks directly into the CI/CD pipeline so every code change is checked before it can ship, with no dependence on a human remembering to run a scan.
 
 This project implements that pattern end to end on a small Flask API, using GitHub Actions.
 
