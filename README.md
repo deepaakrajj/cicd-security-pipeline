@@ -1,10 +1,10 @@
 # CI/CD Security Pipeline
 
-A DevSecOps pipeline that automatically scans every code push for three categories of risk — code-level vulnerabilities, vulnerable dependencies and leaked secrets and blocks deployment if anything critical is found.
+A DevSecOps pipeline that automatically scans every code push for three categories of risk — code-level vulnerabilities, vulnerable dependencies, and leaked secrets — and blocks deployment if anything critical is found.
 
 ## Why this exists
 
-Manual security review doesn't scale with the pace of modern software delivery. The industry answer is build automated security checks directly into the CI/CD pipeline so every code change is checked before it can ship, with no dependence on a human remembering to run a scan.
+Manual security review doesn't scale with the pace of modern software delivery. The industry answer is "shift-left security": build automated security checks directly into the CI/CD pipeline so every code change is checked before it can ship, with no dependence on a human remembering to run a scan.
 
 This project implements that pattern end to end on a small Flask API, using GitHub Actions.
 
@@ -45,6 +45,30 @@ This is a good example of why dependency pinning matters for reasons beyond secu
 └── requirements.txt                 # dependencies, including one intentionally outdated
 ```
 
+## Vulnerability found and fixed
+
+This is the pipeline actually doing its job — not just theory.
+
+**Before fix:** the dependency scan (Trivy) caught 3 real, publicly tracked vulnerabilities in the pinned Flask/Werkzeug versions and blocked the build:
+
+| Library | CVE | Severity | Issue |
+|---|---|---|---|
+| Flask 2.2.2 | CVE-2023-30861 | HIGH | Possible disclosure of permanent session cookie due to missing Vary: Cookie header |
+| Werkzeug | CVE-2023-25577 | HIGH | High resource usage when parsing multipart form data with many fields |
+| Werkzeug | CVE-2024-34069 | HIGH | User may execute code on a developer's machine |
+
+![Dependency scan blocking the build with 3 CVEs found](docs/screenshots/dependency-scan-before-fix.png)
+
+**Fix:** bumped `requirements.txt` to `Flask==3.0.3` and `Werkzeug==3.0.3`, both of which resolve all three CVEs. Confirmed the app and test suite still work unchanged with the patched versions before pushing.
+
+**After fix:** all five pipeline stages pass, including the previously-blocked dependency scan, and deploy runs.
+
+![All pipeline stages passing after the fix](docs/screenshots/dependency-scan-after-fix.png)
+
+This is the enforcement mechanism working as designed: a real vulnerability was introduced, automatically caught before deployment, and the pipeline stayed red until it was actually fixed — not just logged and ignored.
+
+---
+
 ## Running locally
 
 ```
@@ -55,4 +79,4 @@ python app/main.py
 
 ## Status
 
-Build and test stage verified locally — all tests passing. Security scan stages configured and pending first run on GitHub Actions after push.
+Full pipeline verified end to end on GitHub Actions: build/test, all three security scans, and deploy all passing. The dependency scan already proved itself by catching and blocking a real set of CVEs before the fix above.
